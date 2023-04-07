@@ -1,6 +1,8 @@
 package actions
 
 import (
+	sdk "go.flipt.io/flipt/sdk/go"
+	sdkhttp "go.flipt.io/flipt/sdk/go/http"
 	"net/http"
 	"sync"
 
@@ -20,12 +22,17 @@ import (
 
 // ENV is used to help switch settings based on where the
 // application is being run. Default is "development".
-var ENV = envy.Get("GO_ENV", "development")
+var (
+	ENV       = envy.Get("GO_ENV", "development")
+	FliptHost = envy.Get("FLIPT_HOST", "https://rettiprod-toggle.fly.dev")
+)
 
 var (
 	app     *buffalo.App
 	appOnce sync.Once
 	T       *i18n.Translator
+
+	ToggleService *sdk.Flipt
 )
 
 // App is where all routes and middleware for buffalo
@@ -43,6 +50,10 @@ var (
 // declared after it to never be called.
 func App() *buffalo.App {
 	appOnce.Do(func() {
+
+		client := sdk.New(sdkhttp.NewTransport(FliptHost))
+		ToggleService = client.Flipt()
+
 		app = buffalo.New(buffalo.Options{
 			Env:         ENV,
 			SessionName: "_flipt_demo_session",
@@ -66,7 +77,7 @@ func App() *buffalo.App {
 		app.Use(translations())
 
 		app.GET("/", HomeHandler)
-
+		app.Resource("/items", ItemsResource{})
 		app.ServeFiles("/", http.FS(public.FS())) // serve files from the public directory
 	})
 

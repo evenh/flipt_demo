@@ -2,8 +2,6 @@
 # https://docs.docker.com/engine/userguide/eng-image/multistage-build/
 FROM gobuffalo/buffalo:v0.18.14 as builder
 
-ENV GOPROXY http://proxy.golang.org
-
 RUN mkdir -p /src/flipt_demo
 WORKDIR /src/flipt_demo
 
