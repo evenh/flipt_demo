@@ -1,0 +1,12 @@
+---
+development:
+  dialect: "sqlite3"
+  database: /Users/evenholthe/dev/evenh/flipt_demo_flipt_demo_development.sqlite
+
+test:
+  dialect: "sqlite3"
+  database: /Users/evenholthe/dev/evenh/flipt_demo_flipt_demo_test.sqlite
+
+production:
+  dialect: "sqlite3"
+  database: /Users/evenholthe/dev/evenh/flipt_demo_flipt_demo_production.sqlite
