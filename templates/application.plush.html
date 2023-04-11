@@ -3,7 +3,7 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="utf-8">
-  <title>Buffalo - Flipt Demo</title>
+  <title>Bekklog</title>
   <%= stylesheetTag("application.css") %>
   <meta name="csrf-param" content="authenticity_token"/>
   <meta name="csrf-token" content="<%= authenticity_token %>"/>
@@ -15,8 +15,8 @@
     <div class="container">
       <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
         <a href="/"
-           class="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none">
-          todoz
+           class="logo d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none">
+          Bekklog
         </a>
 
         <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
@@ -30,7 +30,7 @@
     </div>
   </div>
 </header>
-<div class="container">
+<div class="container mt-3">
   <%= partial("flash.html") %>
   <%= yield %>
 </div>

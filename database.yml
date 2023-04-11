@@ -1,12 +1,12 @@
 ---
 development:
   dialect: "sqlite3"
-  database: /Users/evenholthe/dev/evenh/flipt_demo_flipt_demo_development.sqlite
+  database: ./persistence/dev.sqlite
 
 test:
   dialect: "sqlite3"
-  database: /Users/evenholthe/dev/evenh/flipt_demo_flipt_demo_test.sqlite
+  database: ./persistence/test.sqlite
 
 production:
   dialect: "sqlite3"
-  database: /Users/evenholthe/dev/evenh/flipt_demo_flipt_demo_production.sqlite
+  database: ./persistence/prod.sqlite
