@@ -1,8 +1,6 @@
 @import "~bootstrap/scss/bootstrap.scss";
 @import "~@fortawesome/fontawesome-free/css/all.min.css";
-
-@import "buffalo";
-
+@import "~bootstrap-icons/font/bootstrap-icons.css";
 
 h1 {
     &.completed {
@@ -14,4 +12,8 @@ h1 {
     label {
         text-decoration: line-through;
     }
+}
+
+.nav-icon {
+  font-size: 1.5em;
 }

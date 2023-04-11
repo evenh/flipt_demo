@@ -1,11 +1,13 @@
 package actions
 
 import (
+	"errors"
 	"flipt_demo/models"
 	"fmt"
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/pop/v6"
 	"github.com/gobuffalo/x/responder"
+	"strings"
 )
 
 type ItemsResource struct {
@@ -21,6 +23,12 @@ func (v ItemsResource) scope(c buffalo.Context) *pop.Query {
 // GET /items
 func (v ItemsResource) List(c buffalo.Context) error {
 	items := &models.Items{}
+	checkCreation(c)
+
+	uppercasing, err := isEnabled(c, "uppercaseitemname")
+	if err != nil {
+		return err
+	}
 
 	// Paginate results. Params "page" and "per_page" control pagination.
 	// Default values are "page=1" and "per_page=20".
@@ -30,6 +38,14 @@ func (v ItemsResource) List(c buffalo.Context) error {
 	// Retrieve all Items from the DB
 	if err := q.All(items); err != nil {
 		return err
+	}
+
+	if uppercasing {
+		updated := *items
+		for k, v := range updated {
+			updated[k].Title = strings.ToUpper(v.Title)
+		}
+		items = &updated
 	}
 
 	// Make Items available inside the html template
@@ -46,10 +62,20 @@ func (v ItemsResource) List(c buffalo.Context) error {
 func (v ItemsResource) Show(c buffalo.Context) error {
 	// Allocate an empty Item
 	item := &models.Item{}
+	checkCreation(c)
 
 	// To find the Item the parameter item_id is used.
 	if err := v.scope(c).Find(item, c.Param("item_id")); err != nil {
 		return c.Error(404, err)
+	}
+
+	uppercasing, err := isEnabled(c, "uppercaseitemname")
+	if err != nil {
+		return err
+	}
+
+	if uppercasing {
+		item.Title = strings.ToUpper(item.Title)
 	}
 
 	// Make item available inside the html template
@@ -62,6 +88,9 @@ func (v ItemsResource) Show(c buffalo.Context) error {
 // This function is mapped to the path GET /items/new
 func (v ItemsResource) New(c buffalo.Context) error {
 	// Make item available inside the html template
+	if !checkCreation(c) {
+		return errors.New("creation disabled")
+	}
 	c.Set("item", &models.Item{})
 
 	return c.Render(200, r.HTML("items/new.plush.html"))
@@ -72,6 +101,9 @@ func (v ItemsResource) New(c buffalo.Context) error {
 func (v ItemsResource) Create(c buffalo.Context) error {
 	// Allocate an empty Item
 	item := &models.Item{}
+	if !checkCreation(c) {
+		return errors.New("creation disabled")
+	}
 
 	// Bind item to the html form elements
 	if err := c.Bind(item); err != nil {
@@ -114,6 +146,7 @@ func (v ItemsResource) Create(c buffalo.Context) error {
 func (v ItemsResource) Edit(c buffalo.Context) error {
 	// Allocate an empty Item
 	item := &models.Item{}
+	checkCreation(c)
 
 	if err := v.scope(c).Find(item, c.Param("item_id")); err != nil {
 		return c.Error(404, err)
@@ -129,6 +162,7 @@ func (v ItemsResource) Edit(c buffalo.Context) error {
 func (v ItemsResource) Update(c buffalo.Context) error {
 	// Allocate an empty Item
 	item := &models.Item{}
+	checkCreation(c)
 
 	if err := v.scope(c).Find(item, c.Param("item_id")); err != nil {
 		return c.Error(404, err)
@@ -187,6 +221,7 @@ func (v ItemsResource) Update(c buffalo.Context) error {
 func (v ItemsResource) Destroy(c buffalo.Context) error {
 	// Allocate an empty Item
 	item := &models.Item{}
+	checkCreation(c)
 
 	// To find the Item the parameter item_id is used.
 	if err := v.scope(c).Find(item, c.Param("item_id")); err != nil {
@@ -216,4 +251,10 @@ func (v ItemsResource) Destroy(c buffalo.Context) error {
 	})
 
 	return res.Respond(c)
+}
+
+func checkCreation(c buffalo.Context) bool {
+	f, _ := isEnabled(c, "creationenabled")
+	c.Set("creationEnabled", f)
+	return f
 }

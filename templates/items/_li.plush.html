@@ -1,8 +1,17 @@
-<li class="list-group-item <%= if (item.Completed) { return "completed" } %>" id="item-<%= item.ID %>">
-<%= form_for(item, {method: "PUT", action: itemPath({item_id: item.ID}), "data-remote": true, "data-type": "script", class: "item-form"}) { %>
-<%= f.CheckboxTag("Completed", {label: item.Title, unchecked: false}) %>
-<% } %>
-<a href="<%= itemPath({ item_id: item.ID }) %>" class="btn btn-info btn-xs">View</a>
-<a href="<%= editItemPath({ item_id: item.ID }) %>" class="btn btn-warning btn-xs">Edit</a>
-<a href="<%= itemPath({ item_id: item.ID }) %>" data-method="DELETE" data-confirm="Are you sure?" class="btn btn-danger btn-xs" data-remote="true" data-type="script">Destroy</a>
+<li class="list-group-item list-group-item-action <%= if (item.Completed) { return "text-bg-success" } %>" id="item-<%= item.ID %>">
+
+<div class="d-flex w-100 justify-content-between">
+  <h5 class="mb-1">
+    <%= form_for(item, {method: "PUT", action: itemPath({item_id: item.ID}), "data-remote": true, "data-type": "script", class: "item-form"}) { %>
+    <%= f.CheckboxTag("Completed", {label: item.Title, unchecked: false}) %>
+    <% } %>
+  </h5>
+  <small>
+    <div class="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
+      <a href="<%= itemPath({ item_id: item.ID }) %>" class="btn btn-success">View</a>
+      <a href="<%= editItemPath({ item_id: item.ID }) %>" class="btn btn-warning">Edit</a>
+      <a href="<%= itemPath({ item_id: item.ID }) %>" data-method="DELETE" data-confirm="Are you sure?" data-remote="true" data-type="script"  class="btn btn-danger">Delete</a>
+    </div>
+  </small>
+</div>
 </li>
